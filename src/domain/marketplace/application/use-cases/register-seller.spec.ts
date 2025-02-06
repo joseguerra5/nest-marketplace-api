@@ -21,6 +21,7 @@ describe("RegisterSeller", () => {
       password: "123456",
       passwordConfirmation: "123456",
       phone: "123456789",
+      avatarId: "teste"
     })
 
     expect(result.isRight()).toBeTruthy()

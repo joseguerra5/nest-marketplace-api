@@ -17,6 +17,8 @@ describe("Fetch all categories", () => {
     const result = await sut.execute()
 
     expect(result.isRight()).toBeTruthy()
-    expect(result.value.categories).toHaveLength(1)
+    if (result.isRight()) {
+      expect(result.value.categories).toHaveLength(1)
+    }
   })
 })

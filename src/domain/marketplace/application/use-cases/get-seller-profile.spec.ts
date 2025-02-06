@@ -20,6 +20,8 @@ describe("Get Seller profile", () => {
     })
 
     expect(result.isRight()).toBeTruthy()
-    expect(result.value.seller).toEqual(inMemorySellerRepository.items[0])
+    if (result.isRight()) {
+      expect(result.value.seller).toEqual(inMemorySellerRepository.items[0])
+    }
   })
 })

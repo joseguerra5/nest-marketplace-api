@@ -13,7 +13,7 @@ interface RegisterSellerUseCaseRequest {
   email: string
   password: string
   passwordConfirmation: string
-  avatarId: string
+  avatarId?: string
 }
 
 type RegisterSellerUseCaseResponse = Either<AlreadyInUseError | PasswordsDoNotMatch, {
@@ -60,12 +60,13 @@ export class RegisterSellerUseCase {
       password: passwordHash
     })
 
-    seller.avatarId = AvatarAttachment.create({
-      attachmentId: new UniqueEntityId(avatarId),
-      sellerId: seller.id
-    })
-
-
+    if (avatarId) {
+      seller.avatarId = AvatarAttachment.create({
+        attachmentId: new UniqueEntityId(avatarId),
+        sellerId: seller.id
+      })
+    } 
+   
     await this.sellerRepository.create(seller)
 
     return right({

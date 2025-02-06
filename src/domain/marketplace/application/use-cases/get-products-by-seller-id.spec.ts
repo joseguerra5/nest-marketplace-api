@@ -38,7 +38,9 @@ describe("Get products", () => {
     })
 
     expect(result.isRight()).toBeTruthy()
+    if (result.isRight()) {
     expect(result.value.products).toHaveLength(2)
+    }
   })
 
   it("should be able to get a Products with search params", async () => {
@@ -59,10 +61,12 @@ describe("Get products", () => {
       sellerId: seller.id.toString()
     })
     expect(result.isRight()).toBeTruthy()
-    expect(result.value.products).toHaveLength(2)
-    expect(result.value?.products).toEqual([
+    if (result.isRight()) {
+      expect(result.value.products).toHaveLength(2)
+      expect(result.value?.products).toEqual([
       expect.objectContaining({ createdAt: new Date(2024, 11, 2) }),
       expect.objectContaining({ createdAt: new Date(2024, 11, 1) }),
     ])
+      }
   })
 })

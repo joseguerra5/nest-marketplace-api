@@ -9,7 +9,7 @@ export interface SellerProps {
   email: string
   password: string
   createdAt: Date
-  avatar: AvatarAttachment
+  avatar?: AvatarAttachment | null
   updatedAt?: Date | null
 }
 
