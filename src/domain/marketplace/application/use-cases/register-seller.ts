@@ -6,6 +6,7 @@ import { AlreadyInUseError } from "./errors/already-in-use"
 import { PasswordsDoNotMatch } from "./errors/password-dont-match"
 import { AvatarAttachment } from "../../enterprise/entities/avatar-attachment"
 import { UniqueEntityId } from "@/core/entities/unique-entity-id"
+import { Injectable } from "@nestjs/common"
 
 interface RegisterSellerUseCaseRequest {
   name: string
@@ -20,6 +21,7 @@ type RegisterSellerUseCaseResponse = Either<AlreadyInUseError | PasswordsDoNotMa
   seller: Seller
 }>
 
+@Injectable()
 export class RegisterSellerUseCase {
   constructor(
     private sellerRepository: SellerRepository,
@@ -65,8 +67,8 @@ export class RegisterSellerUseCase {
         attachmentId: new UniqueEntityId(avatarId),
         sellerId: seller.id
       })
-    } 
-   
+    }
+
     await this.sellerRepository.create(seller)
 
     return right({

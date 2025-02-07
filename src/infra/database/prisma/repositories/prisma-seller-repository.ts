@@ -1,19 +1,21 @@
 import { SellerRepository } from "@/domain/marketplace/application/repositories/seller-repository";
 import { PrismaService } from "../prisma.service";
 import { Seller } from "@/domain/marketplace/enterprise/entities/seller";
-import { PrismaSellerMapper } from "../mappers/prisma-student-mapper";
+import { PrismaSellerMapper } from "../mappers/prisma-seller-mapper";
 import { AvatarAttachmentsRepository } from "@/domain/marketplace/application/repositories/avatar-repository";
+import { Injectable } from "@nestjs/common";
 
+@Injectable()
 export class PrismaSellerRepository implements SellerRepository {
   constructor(
     private prisma: PrismaService,
     private avatarAttachmentRepository: AvatarAttachmentsRepository
-  ) {}
+  ) { }
 
   async create(seller: Seller): Promise<void> {
     const data = PrismaSellerMapper.toPersistence(seller);
 
-    await this.prisma.user.create({data})
+    await this.prisma.user.create({ data })
   }
   async save(seller: Seller): Promise<void> {
     const data = PrismaSellerMapper.toPersistence(seller);
@@ -22,7 +24,7 @@ export class PrismaSellerRepository implements SellerRepository {
       this.prisma.user.update({
         where: {
           id: data.id
-        }, 
+        },
         data,
       }),
 
@@ -36,42 +38,42 @@ export class PrismaSellerRepository implements SellerRepository {
     ])
   }
   async findByEmail(email: string): Promise<Seller | null> {
-   const seller = await this.prisma.user.findUnique({
-    where: {
-      email
+    const seller = await this.prisma.user.findUnique({
+      where: {
+        email
+      }
+    })
+
+    if (!seller) {
+      return null
     }
-   })
 
-   if (!seller) {
-    return null
-   }
-
-   return PrismaSellerMapper.toDoomain(seller)
+    return PrismaSellerMapper.toDomain(seller)
   }
   async findById(id: string): Promise<Seller | null> {
     const seller = await this.prisma.user.findUnique({
       where: {
         id
       }
-     })
-  
-     if (!seller) {
+    })
+
+    if (!seller) {
       return null
-     }
-  
-     return PrismaSellerMapper.toDoomain(seller)
+    }
+
+    return PrismaSellerMapper.toDomain(seller)
   }
   async findByPhone(phone: string): Promise<Seller | null> {
     const seller = await this.prisma.user.findUnique({
       where: {
         phone
       }
-     })
-  
-     if (!seller) {
+    })
+
+    if (!seller) {
       return null
-     }
-  
-     return PrismaSellerMapper.toDoomain(seller)
+    }
+
+    return PrismaSellerMapper.toDomain(seller)
   }
 }

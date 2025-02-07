@@ -3,6 +3,7 @@ import { SellerRepository } from "../repositories/seller-repository"
 import { HashComparer } from "../cryptography/hash-comparer"
 import { Encrypter } from "../cryptography/encrypter"
 import { WrongCredentialsError } from "./errors/wrong-credentials-error"
+import { Injectable } from "@nestjs/common"
 
 interface AuthenticateSellerUseCaseRequest {
   email: string
@@ -13,6 +14,7 @@ type AuthenticateSellerUseCaseResponse = Either<WrongCredentialsError, {
   accessToken: string
 }>
 
+@Injectable()
 export class AuthenticateSellerUseCase {
   constructor(
     private sellerRepository: SellerRepository,

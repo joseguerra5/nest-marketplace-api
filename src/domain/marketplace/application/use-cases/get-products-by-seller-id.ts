@@ -3,6 +3,7 @@ import { ValuesNotFoundError } from "./errors/value-not-found"
 import { ProductRepository } from "../repositories/product-repository"
 import { Product, ProductStatus } from "../../enterprise/entities/product"
 import { SellerRepository } from "../repositories/seller-repository"
+import { Injectable } from "@nestjs/common"
 
 interface GetProductsUseCaseRequest {
   page: number
@@ -15,6 +16,7 @@ type GetProductsUseCaseResponse = Either<ValuesNotFoundError, {
   products: Product[]
 }>
 
+@Injectable()
 export class GetProductsBySellerIdUseCase {
   constructor(
     private productRepository: ProductRepository,

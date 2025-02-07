@@ -3,6 +3,7 @@ import { ValuesNotFoundError } from "./errors/value-not-found"
 import { SellerRepository } from "../repositories/seller-repository"
 import { NotAllowedError } from "@/core/errors/not-allowed-error"
 import { ViewRepository, ViewsPerDay } from "../repositories/view-repository"
+import { Injectable } from "@nestjs/common"
 
 interface CountSellerViewsPerDayUseCaseRequest {
   sellerId: string
@@ -12,6 +13,7 @@ type CountSellerViewsPerDayUseCaseResponse = Either<ValuesNotFoundError | NotAll
   viewsPerDay: ViewsPerDay[]
 }>
 
+@Injectable()
 export class CountSellerViewsPerDayUseCase {
   constructor(
     private sellerRepository: SellerRepository,

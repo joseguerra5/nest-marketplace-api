@@ -5,6 +5,7 @@ import { Product, ProductStatus } from "../../enterprise/entities/product"
 import { SellerRepository } from "../repositories/seller-repository"
 import { NotAllowedError } from "@/core/errors/not-allowed-error"
 import { ProductWithSameStatus } from "./errors/same-status"
+import { Injectable } from "@nestjs/common"
 
 interface ChangeProductStatusUseCaseRequest {
   status: ProductStatus
@@ -16,6 +17,7 @@ type ChangeProductStatusUseCaseResponse = Either<NotAllowedError | ProductWithSa
   product: Product
 }>
 
+@Injectable()
 export class ChangeProductStatusBySellerIdUseCase {
   constructor(
     private productRepository: ProductRepository,

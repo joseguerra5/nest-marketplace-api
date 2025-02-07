@@ -3,6 +3,7 @@ import { AttachmentsRepository } from "../repositories/attachment-repository"
 import { Attachment } from "../../enterprise/entities/attachment"
 import { InvalidAttachmentTypeError } from "./errors/invalid-attachment-type-error"
 import { Uploader } from "../storage/uploader"
+import { Injectable } from "@nestjs/common"
 
 interface UploadAndCreateAttachmentUseCaseRequest {
   body: Buffer
@@ -14,6 +15,7 @@ type UploadAndCreateAttachmentUseCaseResponse = Either<InvalidAttachmentTypeErro
   attachment: Attachment
 }>
 
+@Injectable()
 export class UploadAndCreateAttachmentUseCase {
   constructor(
     private attachmentRepository: AttachmentsRepository,
@@ -31,7 +33,7 @@ export class UploadAndCreateAttachmentUseCase {
     }
 
     // O caso de uso vai chamar o repositorio externo que faz o upload 
-    const {url} = await this.uploader.upload({
+    const { url } = await this.uploader.upload({
       body,
       fileName,
       fileType

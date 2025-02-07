@@ -7,6 +7,7 @@ import { ProductAttachment } from "../../enterprise/entities/product-attachment"
 import { SellerRepository } from "../repositories/seller-repository"
 import { CategoryRepository } from "../repositories/category-repository"
 import { ValuesNotFoundError } from "./errors/value-not-found"
+import { Injectable } from "@nestjs/common"
 
 interface CreateProductUseCaseRequest {
   categoryId: string
@@ -21,6 +22,7 @@ type CreateProductUseCaseResponse = Either<ValuesNotFoundError, {
   product: Product
 }>
 
+@Injectable()
 export class CreateProductUseCase {
   constructor(
     private productRepository: ProductRepository,

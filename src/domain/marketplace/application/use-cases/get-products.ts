@@ -2,6 +2,7 @@ import { Either, left, right } from "@/core/either"
 import { ValuesNotFoundError } from "./errors/value-not-found"
 import { ProductRepository } from "../repositories/product-repository"
 import { Product, ProductStatus } from "../../enterprise/entities/product"
+import { Injectable } from "@nestjs/common"
 
 interface GetProductsUseCaseRequest {
   page: number
@@ -13,6 +14,8 @@ type GetProductsUseCaseResponse = Either<ValuesNotFoundError, {
   products: Product[]
 }>
 
+@Injectable
+  ()
 export class GetProductsUseCase {
   constructor(
     private productRepository: ProductRepository,

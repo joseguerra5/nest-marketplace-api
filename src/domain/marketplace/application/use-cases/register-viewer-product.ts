@@ -5,6 +5,8 @@ import { ValuesNotFoundError } from "./errors/value-not-found"
 import { ViewerIsOwnerProduct } from "./errors/viewer-ownew-product"
 import { ViewRepository } from "../repositories/view-repository"
 import { View } from "../../enterprise/entities/view"
+import { UniqueEntityId } from "@/core/entities/unique-entity-id"
+import { Injectable } from "@nestjs/common"
 
 interface RegisterViewerUseCaseRequest {
   productId: string
@@ -15,6 +17,7 @@ type RegisterViewerUseCaseResponse = Either<ViewerIsOwnerProduct, {
   view: View
 }>
 
+@Injectable()
 export class RegisterViewerUseCase {
   constructor(
     private viewerRepository: ViewRepository,
@@ -49,8 +52,8 @@ export class RegisterViewerUseCase {
     }
 
     const view = View.create({
-      productId,
-      viewerId,
+      productId: new UniqueEntityId(productId),
+      viewerId: new UniqueEntityId(viewerId),
     })
 
     await this.viewerRepository.create(view)

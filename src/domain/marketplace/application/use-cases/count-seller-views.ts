@@ -4,6 +4,7 @@ import { ValuesNotFoundError } from "./errors/value-not-found"
 import { SellerRepository } from "../repositories/seller-repository"
 import { NotAllowedError } from "@/core/errors/not-allowed-error"
 import { ViewRepository } from "../repositories/view-repository"
+import { Injectable } from "@nestjs/common"
 
 interface CountSellerViewsUseCaseRequest {
   sellerId: string
@@ -13,6 +14,7 @@ type CountSellerViewsUseCaseResponse = Either<ValuesNotFoundError | NotAllowedEr
   amount: number
 }>
 
+@Injectable()
 export class CountSellerViewsUseCase {
   constructor(
     private productRepository: ProductRepository,

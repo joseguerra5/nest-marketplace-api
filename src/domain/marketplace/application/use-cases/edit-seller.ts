@@ -6,6 +6,7 @@ import { HashComparer } from "../cryptography/hash-comparer";
 import { NotAllowedError } from "@/core/errors/not-allowed-error";
 import { PasswordsDoNotMatch } from "./errors/password-dont-match";
 import { AlreadyInUseError } from "./errors/already-in-use";
+import { Injectable } from "@nestjs/common";
 
 interface EditSellerUseCaseRequest {
   sellerId: string
@@ -20,6 +21,7 @@ type EditSellerUseCaseResponse = Either<NotAllowedError | PasswordsDoNotMatch | 
   seller: Seller
 }>
 
+@Injectable()
 export class EditSellerUseCase {
   constructor(
     private sellerRepository: SellerRepository,
