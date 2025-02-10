@@ -41,15 +41,15 @@ export class ChangeProductStatusBySellerIdUseCase {
       return left(new ValuesNotFoundError("Product"))
     }
 
-    if (product.sellerId !== seller.id) {
+    if (product.sellerId.toString() !== seller.id.toString()) {
       return left(new NotAllowedError())
     }
 
-    if (status === "cancelled" && product.status === "sold") {
+    if (status === "CANCELLED" && product.status === "SOLD") {
       return left(new ProductWithSameStatus())
     }
 
-    if (status === "sold" && product.status === "cancelled") {
+    if (status === "SOLD" && product.status === "CANCELLED") {
       return left(new ProductWithSameStatus())
     }
 

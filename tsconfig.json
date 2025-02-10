@@ -21,6 +21,7 @@
     },
     "types": [
       "vitest/globals",
+      "multer",
     ],
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false

@@ -49,7 +49,7 @@ export class EditProductUseCase {
       return left(new ValuesNotFoundError("Product"))
     }
 
-    if (product?.status === "sold") {
+    if (product?.status === "SOLD") {
       return left(new NotAllowedError())
     }
 

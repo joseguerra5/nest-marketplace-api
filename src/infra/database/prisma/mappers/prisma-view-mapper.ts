@@ -17,8 +17,8 @@ export class PrismaViewMapper {
   static toPersistence(view: View): Prisma.ViewUncheckedCreateInput {
     return {
       id: view.id.toString(),
-      productId: view.productId,
-      viewerId: view.viewerId,
+      productId: view.productId.toString(),
+      viewerId: view.viewerId.toString(),
       createdAt: view.createdAt
     }
   }

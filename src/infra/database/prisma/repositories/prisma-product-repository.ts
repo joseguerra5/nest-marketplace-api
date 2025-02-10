@@ -19,28 +19,40 @@ export class PrismaProductRepository implements ProductRepository {
     await this.prisma.product.create({
       data
     })
+
+    await this.productAttachmentRepository.createMany(product.attachments.getItems())
   }
 
   async save(product: Product): Promise<void> {
     const data = PrismaProductMapper.toPersistence(product)
 
-    await Promise.all([
-      this.prisma.product.update({
+    if (product.attachments) {
+      await Promise.all([
+        this.prisma.product.update({
+          where: {
+            id: data.id,
+          },
+          data,
+        }),
+        
+        this.productAttachmentRepository.createMany(
+          product.attachments.getNewItems()
+        ),
+  
+        this.productAttachmentRepository.deleteMany(
+          product.attachments.getRemovedItems()
+        )
+      ])
+    } else {
+      await this.prisma.product.update({
         where: {
           id: data.id,
         },
         data,
-      }),
-
-      this.productAttachmentRepository.createMany(
-        product.attachments.getNewItems()
-      ),
-
-      this.productAttachmentRepository.deleteMany(
-        product.attachments.getRemovedItems()
-      )
-    ])
+      })
+    }
   }
+
   async findById(id: string): Promise<Product | null> {
     const product = await this.prisma.product.findUnique({
       where: {

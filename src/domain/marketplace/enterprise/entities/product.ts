@@ -4,9 +4,9 @@ import { ProductAttachmentList } from "./product-attachment-list";
 import { Optional } from "@/core/types/optional";
 
 export enum ProductStatus {
-  available = "available",
-  cancelled = "cancelled",
-  sold = "sold",
+  available = "AVAILABLE",
+  cancelled = "CANCELLED",
+  sold = "SOLD",
 }
 
 export interface ProductProps {
