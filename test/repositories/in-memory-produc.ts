@@ -1,9 +1,70 @@
 import { PaginationParams, PaginationProductsParams } from "@/core/repositories/pagination-params";
 import { Count, ProductRepository } from "@/domain/marketplace/application/repositories/product-repository";
 import { Product } from "@/domain/marketplace/enterprise/entities/product";
+import { ProductWithDetails } from "@/domain/marketplace/enterprise/entities/value-objects/product-with-details";
+import { InMemorySellerRepository } from "./in-memory-seller-repository";
+import { InMemoryCategoryRepository } from "./in-memory-category";
+import { InMemoryAvatarAttachmentRepository } from "./in-memory-avatar-attachments-repository";
+import { InMemoryProductAttachmentRepository } from "./in-memory-product-attachment-repository";
+import { Seller } from "@/domain/marketplace/enterprise/entities/seller";
+import { Category } from "@/domain/marketplace/enterprise/entities/category";
+import { ProductAttachment } from "@/domain/marketplace/enterprise/entities/product-attachment";
+import { UniqueEntityId } from "@/core/entities/unique-entity-id";
 
 export class InMemoryProductRepository implements ProductRepository {
+  constructor(
+    private inMemorySellerRepository: InMemorySellerRepository,
+    private inMemoryCategoryRepository: InMemoryCategoryRepository,
+    private inMemoryAvatarAttachmentRepository: InMemoryAvatarAttachmentRepository,
+    private inMemoryProductAttachmentRepository: InMemoryProductAttachmentRepository
+  ) { }
+
   public items: Product[] = [];
+
+  async findByIdWithDetails(id: string): Promise<ProductWithDetails | null> {
+    const product = this.items
+      .find((item) => item.id.toString() === id)
+
+    if (!product) {
+      return null;
+    }
+
+    const seller = this.inMemorySellerRepository.items.find(seller => {
+      return seller.id.equals(product?.sellerId)
+    })
+
+    if (!seller) {
+      throw new Error('Seller not found')
+    }
+
+    const category = this.inMemoryCategoryRepository.items.find(category => {
+      return category.id.toString() === product.categoryId
+    })
+
+
+    if (!category) {
+      throw new Error('Category not found')
+    }
+
+    const avatarAttachment = this.inMemoryAvatarAttachmentRepository.items.find(attachment => {
+      attachment.SellerId.equals(product.sellerId)
+    })
+
+    const productAttachments = this.inMemoryProductAttachmentRepository.items.filter(attachment => {
+      attachment.productId.equals(product.id)
+    })
+
+
+    return ProductWithDetails.create({
+      productId: product.id,
+      title: product.title,
+      description: product.description,
+      priceInCents: product.priceInCents,
+      status: product.status,
+      owner: Seller.create(seller),
+      category: Category.create(category)
+    })
+  }
 
   async save(product: Product): Promise<void> {
     const itemIndex = this.items.findIndex((item) => item.id.equals(product.id));

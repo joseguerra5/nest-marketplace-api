@@ -40,7 +40,7 @@ describe("Edit Seller", () => {
 
     expect(result.isRight()).toBeTruthy()
     expect(inMemoryProductRepository.items[0]).toEqual(expect.objectContaining({
-      status: "cancelled"
+      status: "CANCELLED"
     }))
   })
 
@@ -63,7 +63,7 @@ describe("Edit Seller", () => {
     expect(result.isLeft()).toBeTruthy()
     expect(result.value).instanceOf(ProductWithSameStatus)
     expect(inMemoryProductRepository.items[0]).toEqual(expect.objectContaining({
-      status: "sold"
+      status: "SOLD"
     }))
   })
 

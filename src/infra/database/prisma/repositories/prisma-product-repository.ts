@@ -6,6 +6,8 @@ import { PrismaProductMapper } from "../mappers/prisma-product-mapper";
 import { ProductAttachmentsRepository } from "@/domain/marketplace/application/repositories/product-attachment-repository";
 import { ProductStatus } from "@prisma/client";
 import { Injectable } from "@nestjs/common";
+import { ProductWithDetails } from "@/domain/marketplace/enterprise/entities/value-objects/product-with-details";
+import { PrismaProductWithDetailsMapper } from "../mappers/prisma-product-with-details";
 
 @Injectable()
 export class PrismaProductRepository implements ProductRepository {
@@ -13,6 +15,24 @@ export class PrismaProductRepository implements ProductRepository {
     private prisma: PrismaService,
     private productAttachmentRepository: ProductAttachmentsRepository
   ) { }
+  async findByIdWithDetails(id: string): Promise<ProductWithDetails | null> {
+    const product = await this.prisma.product.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        seller: true,
+        category: true,
+        attachments: true
+      }
+    })
+
+    if (!product) {
+      return null
+    }
+
+    return PrismaProductWithDetailsMapper.toDomain(product)
+  }
   async create(product: Product): Promise<void> {
     const data = PrismaProductMapper.toPersistence(product)
 
@@ -34,11 +54,11 @@ export class PrismaProductRepository implements ProductRepository {
           },
           data,
         }),
-        
+
         this.productAttachmentRepository.createMany(
           product.attachments.getNewItems()
         ),
-  
+
         this.productAttachmentRepository.deleteMany(
           product.attachments.getRemovedItems()
         )

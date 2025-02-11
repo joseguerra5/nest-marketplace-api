@@ -6,17 +6,23 @@ import { InMemoryCategoryRepository } from "test/repositories/in-memory-category
 import { makeCategory } from "test/factories/make-category";
 import { makeProduct } from "test/factories/make-product";
 import { GetProductUseCase } from "./get-product-by-id";
+import { InMemoryAvatarAttachmentRepository } from "test/repositories/in-memory-avatar-attachments-repository";
+import { InMemoryProductAttachmentRepository } from "test/repositories/in-memory-product-attachment-repository";
 
 let inMemoryProductRepository: InMemoryProductRepository
 let inMemorySellerRepository: InMemorySellerRepository
 let inMemoryCategoryRepository: InMemoryCategoryRepository
+let inMemoryAvatarAttachmentRepository: InMemoryAvatarAttachmentRepository
+let inMemoryProductAttachmentRepository: InMemoryProductAttachmentRepository
 let sut: GetProductUseCase
 
 describe("Get product by id", () => {
   beforeEach(() => {
-    inMemoryProductRepository = new InMemoryProductRepository()
+    inMemoryProductRepository = new InMemoryProductRepository(inMemorySellerRepository, inMemoryCategoryRepository, inMemoryAvatarAttachmentRepository, inMemoryProductAttachmentRepository)
     inMemorySellerRepository = new InMemorySellerRepository()
     inMemoryCategoryRepository = new InMemoryCategoryRepository()
+    inMemoryAvatarAttachmentRepository = new InMemoryAvatarAttachmentRepository()
+    inMemoryProductAttachmentRepository = new InMemoryProductAttachmentRepository()
     sut = new GetProductUseCase(inMemoryProductRepository)
   });
   it("should be able to edit a Product", async () => {

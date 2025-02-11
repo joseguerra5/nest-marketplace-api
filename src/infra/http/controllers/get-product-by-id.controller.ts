@@ -2,6 +2,7 @@ import { BadRequestException, ConflictException, Controller, Get, HttpCode, Para
 import { z } from "zod";
 import { ValuesNotFoundError } from "@/domain/marketplace/application/use-cases/errors/value-not-found";
 import { GetProductUseCase } from "@/domain/marketplace/application/use-cases/get-product-by-id";
+import { ProductDetailsPresenter } from "../presenters/product-details-presenter";
 
 export const getBodySchema = z.object({
   categoryId: z.string(),
@@ -14,12 +15,12 @@ export const getBodySchema = z.object({
 export type GetBodySchema = z.infer<typeof getBodySchema>
 @Controller("/products/:productId")
 export class GetProductByIdController {
-  constructor(private sut: GetProductUseCase) {}
+  constructor(private sut: GetProductUseCase) { }
   @Get()
   @HttpCode(200)
   async handle(
     @Param("productId") productId: string
-){
+  ) {
 
     const result = await this.sut.execute({
       productId,
