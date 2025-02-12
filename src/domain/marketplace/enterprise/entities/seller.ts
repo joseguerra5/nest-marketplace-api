@@ -50,12 +50,12 @@ export class Seller extends Entity<SellerProps> {
     this.touch()
   }
 
-  get avatarId() {
-    return this.props.avatarId
+  get avatar() {
+    return this.props.avatar
   }
 
-  set avatarId(avatarId: AvatarAttachment) {
-    this.props.avatarId = avatarId
+  set avatar(avatar: AvatarAttachment) {
+    this.props.avatar = avatar
     this.touch()
   }
 
@@ -75,10 +75,17 @@ export class Seller extends Entity<SellerProps> {
   static create(
     props: Optional<SellerProps, "createdAt" | 'avatar'>, id?: UniqueEntityId
   ): Seller {
+    let idSet
+    if (!id) {
+      idSet = new UniqueEntityId()
+    }
     const seller = new Seller({
       ...props,
+      avatar: props.createdAt ?? AvatarAttachment.create({
+        sellerId: idSet
+      }),
       createdAt: props.createdAt ?? new Date()
-    }, id)
+    }, id ?? idSet)
 
     return seller
   }

@@ -1,5 +1,7 @@
 import { UniqueEntityId } from "@/core/entities/unique-entity-id";
 import { AvatarAttachment, AvatarAttachmentProps } from "@/domain/marketplace/enterprise/entities/avatar-attachment";
+import { PrismaService } from "@/infra/database/prisma/prisma.service";
+import { Injectable } from "@nestjs/common";
 
 export function makeAvatarAttachment(
   overide: Partial<AvatarAttachmentProps> = {},
@@ -11,4 +13,26 @@ export function makeAvatarAttachment(
     ...overide
   }, id)
   return avatarAttachment
+}
+
+@Injectable()
+export class AvatarAttachmentFactory {
+  constructor(private prisma: PrismaService) {}
+
+  async makePrismaAvatarAttachment(
+    data: Partial<AvatarAttachmentProps> = {},
+  ): Promise<AvatarAttachment> {
+    const avatar = makeAvatarAttachment(data)
+
+    await this.prisma.attachment.update({
+      where: {
+        id: avatar.attachmentId.toValue()
+      },
+      data: {
+        userId: avatar.sellerId.toValue()
+      },
+    })
+
+    return avatar
+  }
 }

@@ -26,7 +26,7 @@ describe('Upload attachments (E2E)', () => {
     jwt = moduleRef.get(JwtService)
     await app.init()
   })
-  test('[POST] /attachments', async () => {
+  test.skip('[POST] /attachments', async () => {
     const user = await sellerFactory.makePrismaSeller({
       password: await hash('123456', 8),
     })

@@ -20,7 +20,7 @@ export class PrismaAvatarMapper {
         id: avatar.id.toString()
       },
       data: {
-        userId: avatar.SellerId.toString
+        userId: avatar.attachmentId.toString()
       }
     }
   }

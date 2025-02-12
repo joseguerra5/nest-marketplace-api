@@ -40,8 +40,6 @@ export class UploadAttachmentController {
       body: file.buffer
     })
 
-    console.log(result.value)
-
     if (result.isLeft()) {
       const error = result.value
 

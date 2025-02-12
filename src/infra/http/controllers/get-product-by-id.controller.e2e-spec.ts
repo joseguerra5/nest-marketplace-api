@@ -5,6 +5,8 @@ import { JwtService } from '@nestjs/jwt'
 import { Test } from '@nestjs/testing'
 import { hash } from 'bcryptjs'
 import request from 'supertest'
+import { AttachmentFactory } from 'test/factories/make-attachment'
+import { AvatarAttachmentFactory } from 'test/factories/make-avatar-attachment'
 import { CategoryFactory } from 'test/factories/make-category'
 import { ProductFactory } from 'test/factories/make-product'
 import { SellerFactory } from 'test/factories/make-seller'
@@ -15,17 +17,21 @@ describe('Get a product (E2E)', () => {
   let sellerFactory: SellerFactory
   let productFactory: ProductFactory
   let categoryFactory: CategoryFactory
+  let attachmentFactory: AttachmentFactory
+  let avatarFactory: AvatarAttachmentFactory
   let jwt: JwtService
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [SellerFactory, ProductFactory, CategoryFactory],
+      providers: [SellerFactory, ProductFactory, CategoryFactory, AvatarAttachmentFactory, AttachmentFactory],
     }).compile()
 
     app = moduleRef.createNestApplication()
 
     sellerFactory = moduleRef.get(SellerFactory)
+    avatarFactory = moduleRef.get(AvatarAttachmentFactory)
+    attachmentFactory = moduleRef.get(AttachmentFactory)
     productFactory = moduleRef.get(ProductFactory)
     categoryFactory = moduleRef.get(CategoryFactory)
 
@@ -37,14 +43,23 @@ describe('Get a product (E2E)', () => {
       password: await hash('123456', 8),
     })
 
+    
+
     const accessToken = jwt.sign({ sub: user.id.toString() })
 
     const category = await categoryFactory.makePrismaCategory()
+
+    const attachment = await attachmentFactory.makePrismaAttachment()
+    await avatarFactory.makePrismaAvatarAttachment({
+      sellerId: user.id,
+      attachmentId: attachment.id
+    })
 
     const product = await productFactory.makePrismaProduct({
       sellerId: user.id,
       categoryId: category.id
     })
+
 
 
     const response = await request(app.getHttpServer())
@@ -53,9 +68,10 @@ describe('Get a product (E2E)', () => {
       .send()
 
     
+    console.log(response.body)
+    
     expect(response.statusCode).toBe(200)
 
-    console.log(response.body)
    
     expect(response.body).toEqual({
       product: expect.objectContaining({

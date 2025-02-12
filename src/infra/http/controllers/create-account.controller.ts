@@ -11,7 +11,7 @@ export const createAccountBodySchema = z.object({
   password: z.string().min(8),
   passwordConfirmation: z.string().min(8),
   phone: z.string().min(8),
-
+  avatarId: z.string().uuid().nullable()
 })
 
 export type CreateAccountBodySchema = z.infer<typeof createAccountBodySchema>
@@ -23,14 +23,15 @@ export class CreateAccountController {
   @HttpCode(201)
   @UsePipes(new ZodValidationPipe(createAccountBodySchema))
   async handle(@Body() body: CreateAccountBodySchema){
-    const {email, name, password, passwordConfirmation, phone} = body
+    const {email, name, password, passwordConfirmation, phone, avatarId} = body
 
     const result = await this.sut.execute({
       email,
       name,
       password,
       passwordConfirmation,
-      phone
+      phone,
+      avatarId
     })
 
     if (result.isLeft()) {

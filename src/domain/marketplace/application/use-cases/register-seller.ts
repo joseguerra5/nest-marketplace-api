@@ -14,7 +14,7 @@ interface RegisterSellerUseCaseRequest {
   email: string
   password: string
   passwordConfirmation: string
-  avatarId?: string
+  avatarId?: string | null
 }
 
 type RegisterSellerUseCaseResponse = Either<AlreadyInUseError | PasswordsDoNotMatch, {
@@ -59,11 +59,12 @@ export class RegisterSellerUseCase {
       name,
       phone,
       email,
-      password: passwordHash
+      password: passwordHash,
+      avatar: null
     })
 
     if (avatarId) {
-      seller.avatarId = AvatarAttachment.create({
+      seller.avatar = AvatarAttachment.create({
         attachmentId: new UniqueEntityId(avatarId),
         sellerId: seller.id
       })

@@ -3,12 +3,12 @@ import { UniqueEntityId } from "@/core/entities/unique-entity-id";
 
 export interface AvatarAttachmentProps {
   sellerId: UniqueEntityId
-  attachmentId: UniqueEntityId
+  attachmentId?: UniqueEntityId | null
 }
 
 export class AvatarAttachment extends Entity<AvatarAttachmentProps> {
-  get SellerId() {
-    return this.props.SellerId
+  get sellerId() {
+    return this.props.sellerId
   }
 
   get attachmentId() {

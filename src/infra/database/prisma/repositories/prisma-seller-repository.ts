@@ -29,7 +29,7 @@ export class PrismaSellerRepository implements SellerRepository {
       }),
 
       this.avatarAttachmentRepository.create(
-        seller.avatarId
+        seller.avatar
       ),
 
       this.avatarAttachmentRepository.deleteBySellerId(
