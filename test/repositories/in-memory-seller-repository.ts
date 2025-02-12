@@ -1,3 +1,4 @@
+import { AvatarAttachmentsRepository } from "@/domain/marketplace/application/repositories/avatar-repository";
 import { SellerRepository } from "@/domain/marketplace/application/repositories/seller-repository";
 import { Seller } from "@/domain/marketplace/enterprise/entities/seller";
 
@@ -5,12 +6,27 @@ export class InMemorySellerRepository implements SellerRepository {
 
   public items: Seller[] = [];
 
+  constructor(
+    private sellerAttachmentRepository: AvatarAttachmentsRepository
+  ) { }
+
+
   async create(seller: Seller): Promise<void> {
+    if (seller.avatarId) {
+      await this.sellerAttachmentRepository.create(
+        seller.avatarId
+      )
+    }
+
     this.items.push(seller);
+
   }
 
   async save(seller: Seller): Promise<void> {
     const itemIndex = this.items.findIndex((item) => item.id === seller.id);
+
+    await this.sellerAttachmentRepository.delete(seller.avatarId)
+    await this.sellerAttachmentRepository.create(seller.avatarId)
 
     this.items[itemIndex] = seller;
   }

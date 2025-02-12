@@ -8,8 +8,6 @@ import { InMemoryAvatarAttachmentRepository } from "./in-memory-avatar-attachmen
 import { InMemoryProductAttachmentRepository } from "./in-memory-product-attachment-repository";
 import { Seller } from "@/domain/marketplace/enterprise/entities/seller";
 import { Category } from "@/domain/marketplace/enterprise/entities/category";
-import { ProductAttachment } from "@/domain/marketplace/enterprise/entities/product-attachment";
-import { UniqueEntityId } from "@/core/entities/unique-entity-id";
 
 export class InMemoryProductRepository implements ProductRepository {
   constructor(
@@ -45,14 +43,6 @@ export class InMemoryProductRepository implements ProductRepository {
     if (!category) {
       throw new Error('Category not found')
     }
-
-    const avatarAttachment = this.inMemoryAvatarAttachmentRepository.items.find(attachment => {
-      attachment.SellerId.equals(product.sellerId)
-    })
-
-    const productAttachments = this.inMemoryProductAttachmentRepository.items.filter(attachment => {
-      attachment.productId.equals(product.id)
-    })
 
 
     return ProductWithDetails.create({

@@ -18,11 +18,11 @@ let sut: GetProductUseCase
 
 describe("Get product by id", () => {
   beforeEach(() => {
-    inMemoryProductRepository = new InMemoryProductRepository(inMemorySellerRepository, inMemoryCategoryRepository, inMemoryAvatarAttachmentRepository, inMemoryProductAttachmentRepository)
-    inMemorySellerRepository = new InMemorySellerRepository()
+    inMemoryProductAttachmentRepository = new InMemoryProductAttachmentRepository()
     inMemoryCategoryRepository = new InMemoryCategoryRepository()
     inMemoryAvatarAttachmentRepository = new InMemoryAvatarAttachmentRepository()
-    inMemoryProductAttachmentRepository = new InMemoryProductAttachmentRepository()
+    inMemorySellerRepository = new InMemorySellerRepository(inMemoryAvatarAttachmentRepository)
+    inMemoryProductRepository = new InMemoryProductRepository(inMemorySellerRepository, inMemoryCategoryRepository, inMemoryAvatarAttachmentRepository, inMemoryProductAttachmentRepository)
     sut = new GetProductUseCase(inMemoryProductRepository)
   });
   it("should be able to edit a Product", async () => {
@@ -32,12 +32,14 @@ describe("Get product by id", () => {
     const category = makeCategory()
     await inMemoryCategoryRepository.create(category)
 
-    const product = makeProduct({ sellerId: seller.id, categoryId: category.id })
+    const product = makeProduct({ sellerId: seller.id, categoryId: category.id.toValue() })
     await inMemoryProductRepository.create(product)
 
     const result = await sut.execute({
       productId: product.id.toString(),
     })
+
+    console.log(result.value.product.owner)
 
     expect(result.isRight()).toBeTruthy()
   })

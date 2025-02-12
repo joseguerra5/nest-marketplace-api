@@ -3,8 +3,8 @@ import { config } from "dotenv";
 import { randomUUID } from "crypto";
 import { execSync } from "child_process";
 
-config({path: ".env", override: true})
-config({path: ".env.test", override: true})
+config({ path: ".env", override: true })
+//config({path: ".env.test", override: true})
 
 const prisma = new PrismaClient()
 

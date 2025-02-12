@@ -3,14 +3,18 @@ import { RegisterSellerUseCase } from "./register-seller";
 import { FakeHasher } from "test/cryptography/fake-hasher";
 import { makeSeller } from "test/factories/make-seller";
 import { AlreadyInUseError } from "./errors/already-in-use";
+import { makeAvatarAttachment } from "test/factories/make-avatar-attachment";
+import { InMemoryAvatarAttachmentRepository } from "test/repositories/in-memory-avatar-attachments-repository";
 
 let inMemorySellerRepository: InMemorySellerRepository
+let inMemorAvatarAttachmentRepository: InMemoryAvatarAttachmentRepository
 let fakeHasher: FakeHasher
 let sut: RegisterSellerUseCase
 
 describe("RegisterSeller", () => {
   beforeEach(() => {
-    inMemorySellerRepository = new InMemorySellerRepository()
+    inMemorAvatarAttachmentRepository = new InMemoryAvatarAttachmentRepository()
+    inMemorySellerRepository = new InMemorySellerRepository(inMemorAvatarAttachmentRepository)
     fakeHasher = new FakeHasher()
     sut = new RegisterSellerUseCase(inMemorySellerRepository, fakeHasher)
   });
@@ -23,6 +27,12 @@ describe("RegisterSeller", () => {
       phone: "123456789",
       avatarId: "teste"
     })
+
+    if (result.isRight()) {
+      makeAvatarAttachment({
+        sellerId: result.value.seller.id
+      })
+    }
 
     expect(result.isRight()).toBeTruthy()
     expect(result.value).toEqual({ seller: inMemorySellerRepository.items[0] })

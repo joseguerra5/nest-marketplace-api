@@ -5,15 +5,18 @@ import { UniqueEntityId } from "@/core/entities/unique-entity-id";
 import { EditSellerUseCase } from "./edit-seller";
 import { AlreadyInUseError } from "./errors/already-in-use";
 import { NotAllowedError } from "@/core/errors/not-allowed-error";
+import { InMemoryAvatarAttachmentRepository } from "test/repositories/in-memory-avatar-attachments-repository";
 
 let inMemorySellerRepository: InMemorySellerRepository
+let inMemoryAvatarAttachmentRepository: InMemoryAvatarAttachmentRepository
 let fakeHasher: FakeHasher
 let fakeEncrypter: FakeHasher
 let sut: EditSellerUseCase
 
 describe("Edit Seller", () => {
   beforeEach(() => {
-    inMemorySellerRepository = new InMemorySellerRepository()
+    inMemoryAvatarAttachmentRepository = new InMemoryAvatarAttachmentRepository()
+    inMemorySellerRepository = new InMemorySellerRepository(inMemoryAvatarAttachmentRepository)
     fakeHasher = new FakeHasher()
     fakeEncrypter = new FakeHasher()
     sut = new EditSellerUseCase(inMemorySellerRepository, fakeHasher, fakeEncrypter)
