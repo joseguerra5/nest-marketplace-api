@@ -16,6 +16,18 @@ import { RegisterViewController } from "./controllers/register-view-product.cont
 import { RegisterViewerUseCase } from "@/domain/marketplace/application/use-cases/register-viewer-product";
 import { GetProductByIdController } from "./controllers/get-product-by-id.controller";
 import { GetProductUseCase } from "@/domain/marketplace/application/use-cases/get-product-by-id";
+import { CountSellerAvailableProductsUseCase } from "@/domain/marketplace/application/use-cases/count-seller-available-products";
+import { GetCountAmountAvailableProductsController } from "./controllers/count-seller-available-products.cotroller";
+import { CountSellerSoldProductsUseCase } from "@/domain/marketplace/application/use-cases/count-seller-sold-products";
+import { GetCountAmountSoldProductsController } from "./controllers/count-seller-sold-products.controller";
+import { GetCountSellersViewsPerDayController } from "./controllers/count-seller-views-per-day.controller";
+import { CountSellerViewsPerDayUseCase } from "@/domain/marketplace/application/use-cases/count-seller-views-per-day";
+import { CountSellerViewsUseCase } from "@/domain/marketplace/application/use-cases/count-seller-views";
+import { GetCountSellersViewsController } from "./controllers/count-seller-views.controller";
+import { GetCountProductViews7daysController } from "./controllers/count-views-product-7-days.controller";
+import { CountViewsProduct7daysUseCase } from "@/domain/marketplace/application/use-cases/count-views-product-7-days";
+import { EditProductController } from "./controllers/edit-product.controller";
+import { EditProductUseCase } from "@/domain/marketplace/application/use-cases/edit-product";
 
 @Module({
   imports: [DatabaseModule, CryptographyModule, StorageModule],
@@ -27,6 +39,12 @@ import { GetProductUseCase } from "@/domain/marketplace/application/use-cases/ge
     UploadAttachmentController,
     RegisterViewController,
     GetProductByIdController,
+    GetCountAmountAvailableProductsController,
+    GetCountAmountSoldProductsController,
+    GetCountSellersViewsPerDayController,
+    GetCountSellersViewsController,
+    GetCountProductViews7daysController,
+    EditProductController,
   ],
   providers: [
     RegisterSellerUseCase,
@@ -35,7 +53,13 @@ import { GetProductUseCase } from "@/domain/marketplace/application/use-cases/ge
     ChangeProductStatusBySellerIdUseCase,
     UploadAndCreateAttachmentUseCase,
     RegisterViewerUseCase,
-    GetProductUseCase
+    GetProductUseCase,
+    CountSellerAvailableProductsUseCase,
+    CountSellerSoldProductsUseCase,
+    CountSellerViewsPerDayUseCase,
+    CountSellerViewsUseCase,
+    CountViewsProduct7daysUseCase,
+    EditProductUseCase
   ],
 })
 

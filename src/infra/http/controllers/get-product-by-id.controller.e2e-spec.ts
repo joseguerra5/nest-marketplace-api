@@ -43,7 +43,7 @@ describe('Get a product (E2E)', () => {
       password: await hash('123456', 8),
     })
 
-    
+
 
     const accessToken = jwt.sign({ sub: user.id.toString() })
 
@@ -67,12 +67,11 @@ describe('Get a product (E2E)', () => {
       .set('Authorization', `Bearer ${accessToken}`)
       .send()
 
-    
-    console.log(response.body)
-    
+
+
     expect(response.statusCode).toBe(200)
 
-   
+
     expect(response.body).toEqual({
       product: expect.objectContaining({
         title: product.title,

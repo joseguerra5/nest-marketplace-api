@@ -1,6 +1,5 @@
 import { AppModule } from '@/infra/app.module'
 import { DatabaseModule } from '@/infra/database/database.module'
-import { PrismaService } from '@/infra/database/prisma/prisma.service'
 import { INestApplication } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { Test } from '@nestjs/testing'
@@ -11,9 +10,8 @@ import { ProductFactory } from 'test/factories/make-product'
 import { SellerFactory } from 'test/factories/make-seller'
 
 
-describe('Change product status (E2E)', () => {
+describe('Get a count products available (E2E)', () => {
   let app: INestApplication
-  let prisma: PrismaService
   let sellerFactory: SellerFactory
   let productFactory: ProductFactory
   let categoryFactory: CategoryFactory
@@ -27,7 +25,6 @@ describe('Change product status (E2E)', () => {
 
     app = moduleRef.createNestApplication()
 
-    prisma = moduleRef.get(PrismaService)
     sellerFactory = moduleRef.get(SellerFactory)
     productFactory = moduleRef.get(ProductFactory)
     categoryFactory = moduleRef.get(CategoryFactory)
@@ -35,7 +32,7 @@ describe('Change product status (E2E)', () => {
     jwt = moduleRef.get(JwtService)
     await app.init()
   })
-  test('[PATCH] /products/:productId/:status', async () => {
+  test('[GET] /sellers/metrics/products/available', async () => {
     const user = await sellerFactory.makePrismaSeller({
       password: await hash('123456', 8),
     })
@@ -44,28 +41,25 @@ describe('Change product status (E2E)', () => {
 
     const category = await categoryFactory.makePrismaCategory()
 
-    const product = await productFactory.makePrismaProduct({
+    await productFactory.makePrismaProduct({
       sellerId: user.id,
       categoryId: category.id
     })
 
+    await productFactory.makePrismaProduct({
+      sellerId: user.id,
+      categoryId: category.id
+    })
 
     const response = await request(app.getHttpServer())
-      .patch(`/products/${product.id.toString()}/sold`)
+      .get(`/sellers/metrics/products/available`)
       .set('Authorization', `Bearer ${accessToken}`)
       .send()
 
+    expect(response.statusCode).toBe(200)
 
-    expect(response.statusCode).toBe(204)
-
-    const productOnDatabase = await prisma.product.findFirst({
-      where: {
-        id: product.id.toString()
-      },
+    expect(response.body).toEqual({
+      amount: 2
     })
-
-    expect(productOnDatabase).toBeTruthy()
-
-    expect(productOnDatabase?.status).toEqual("SOLD")
   })
 })

@@ -2,7 +2,6 @@ import { ProductWithDetails } from "@/domain/marketplace/enterprise/entities/val
 
 export class ProductDetailsPresenter {
   static toHttp(productDetails: ProductWithDetails) {
-    console.log("aqui", productDetails.owner.avatar, productDetails.category, productDetails.owner)
     return {
       id: productDetails.productId,
       title: productDetails.title,
@@ -14,10 +13,10 @@ export class ProductDetailsPresenter {
         name: productDetails.owner.name,
         phone: productDetails.owner.phone,
         email: productDetails.owner.email,
-         avatar: {
+        avatar: {
           id: productDetails.owner.avatar,
           url: productDetails.owner.avatar,
-         }
+        }
       },
       category: {
         id: productDetails.category.categoryId,

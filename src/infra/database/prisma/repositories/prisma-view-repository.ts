@@ -40,11 +40,23 @@ export class PrismaViewRepository implements ViewRepository {
     return views.map(PrismaViewMapper.toDomain)
   }
   async countBySeller({ from, sellerId }: CountBySeller): Promise<number> {
+    const products = await this.prisma.product.findMany({
+      where: {
+        sellerId: sellerId
+      },
+      select: { id: true }
+    })
+
+    const productIds = products.map(product => product.id)
+
+    if (productIds.length === 0) {
+      return 0
+    }
+
     const count = await this.prisma.view.count({
       where: {
-        viewerId: sellerId,
-        createdAt:
-          from ? { gte: new Date(from) } : undefined,
+        productId: { in: productIds }, //filtra views que pertecem aos produtos do seller
+        ...(from ? { createdAt: { gte: new Date(from) } } : {})
       }
     })
 

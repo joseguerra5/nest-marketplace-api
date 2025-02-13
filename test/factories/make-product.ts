@@ -12,7 +12,7 @@ export function makeProduct(
   const product = Product.create({
     title: faker.commerce.productName(),
     description: faker.commerce.productDescription(),
-    priceInCents: faker.number.int({max: 10000}),
+    priceInCents: faker.number.int({ max: 10000 }),
     sellerId: new UniqueEntityId(),
     categoryId: new UniqueEntityId(),
     ...overide
@@ -22,17 +22,19 @@ export function makeProduct(
 
 @Injectable()
 export class ProductFactory {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async makePrismaProduct(
     data: Partial<ProductProps> = {},
+    id?: UniqueEntityId
   ): Promise<Product> {
-    const product = makeProduct(data)
+    const product = makeProduct(data, id)
+
 
     await this.prisma.product.create({
       data: PrismaProductMapper.toPersistence(product)
     })
-  
+
     return product
   }
 }

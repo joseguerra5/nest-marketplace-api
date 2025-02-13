@@ -1,5 +1,4 @@
 import { Either, left, right } from "@/core/either"
-import { ProductRepository } from "../repositories/product-repository"
 import { ValuesNotFoundError } from "./errors/value-not-found"
 import { SellerRepository } from "../repositories/seller-repository"
 import { NotAllowedError } from "@/core/errors/not-allowed-error"
@@ -17,7 +16,6 @@ type CountSellerViewsUseCaseResponse = Either<ValuesNotFoundError | NotAllowedEr
 @Injectable()
 export class CountSellerViewsUseCase {
   constructor(
-    private productRepository: ProductRepository,
     private sellerRepository: SellerRepository,
     private viewRepository: ViewRepository,
   ) { }
@@ -35,7 +33,6 @@ export class CountSellerViewsUseCase {
     const last30Days = new Date().setDate(toDay.getDate() - 30)
 
     const amount = await this.viewRepository.countBySeller({ sellerId, from: new Date(last30Days) })
-
 
     return right({
       amount

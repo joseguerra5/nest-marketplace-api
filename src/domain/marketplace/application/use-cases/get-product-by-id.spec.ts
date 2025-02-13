@@ -39,8 +39,6 @@ describe("Get product by id", () => {
       productId: product.id.toString(),
     })
 
-    console.log(result.value.product.owner)
-
     expect(result.isRight()).toBeTruthy()
   })
 })

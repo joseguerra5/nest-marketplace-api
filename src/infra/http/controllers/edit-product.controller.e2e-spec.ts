@@ -35,7 +35,7 @@ describe('Change product status (E2E)', () => {
     jwt = moduleRef.get(JwtService)
     await app.init()
   })
-  test('[PATCH] /products/:productId/:status', async () => {
+  test('[PUT] /products/:productId', async () => {
     const user = await sellerFactory.makePrismaSeller({
       password: await hash('123456', 8),
     })
@@ -51,12 +51,21 @@ describe('Change product status (E2E)', () => {
 
 
     const response = await request(app.getHttpServer())
-      .patch(`/products/${product.id.toString()}/sold`)
+      .put(`/products/${product.id.toString()}`)
       .set('Authorization', `Bearer ${accessToken}`)
-      .send()
+      .send({
+        attachmentsIds: ["1", "2"],
+        categoryId: category.id.toString(),
+        description: "test",
+        priceInCents: 123123,
+        productId: product.id.toString(),
+        sellerId: user.id.toString(),
+        title: "test",
+      })
 
+    console.log(response.body.errors.details)
 
-    expect(response.statusCode).toBe(204)
+    expect(response.statusCode).toBe(200)
 
     const productOnDatabase = await prisma.product.findFirst({
       where: {
@@ -66,6 +75,6 @@ describe('Change product status (E2E)', () => {
 
     expect(productOnDatabase).toBeTruthy()
 
-    expect(productOnDatabase?.status).toEqual("SOLD")
+    expect(productOnDatabase?.description).toEqual("test")
   })
 })
