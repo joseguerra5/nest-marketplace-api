@@ -109,7 +109,8 @@ export class Product extends Entity<ProductProps> {
     const product = new Product({
       ...props,
       status: props.status ?? ProductStatus.available,
-      createdAt: props.createdAt ?? new Date()
+      createdAt: props.createdAt ?? new Date(),
+      attachments: props.attachments ?? new ProductAttachmentList(),
     }, id)
 
     return product

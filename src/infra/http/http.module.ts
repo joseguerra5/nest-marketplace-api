@@ -17,7 +17,7 @@ import { RegisterViewerUseCase } from "@/domain/marketplace/application/use-case
 import { GetProductByIdController } from "./controllers/get-product-by-id.controller";
 import { GetProductUseCase } from "@/domain/marketplace/application/use-cases/get-product-by-id";
 import { CountSellerAvailableProductsUseCase } from "@/domain/marketplace/application/use-cases/count-seller-available-products";
-import { GetCountAmountAvailableProductsController } from "./controllers/count-seller-available-products.cotroller";
+import { GetCountAmountAvailableProductsController } from "./controllers/count-seller-available-products.controller";
 import { CountSellerSoldProductsUseCase } from "@/domain/marketplace/application/use-cases/count-seller-sold-products";
 import { GetCountAmountSoldProductsController } from "./controllers/count-seller-sold-products.controller";
 import { GetCountSellersViewsPerDayController } from "./controllers/count-seller-views-per-day.controller";
@@ -28,6 +28,16 @@ import { GetCountProductViews7daysController } from "./controllers/count-views-p
 import { CountViewsProduct7daysUseCase } from "@/domain/marketplace/application/use-cases/count-views-product-7-days";
 import { EditProductController } from "./controllers/edit-product.controller";
 import { EditProductUseCase } from "@/domain/marketplace/application/use-cases/edit-product";
+import { EditSellerController } from "./controllers/edit-seller.controller";
+import { EditSellerUseCase } from "@/domain/marketplace/application/use-cases/edit-seller";
+import { FetchAllCategoriesUseCase } from "@/domain/marketplace/application/use-cases/fetch-all-categories";
+import { FetchAllCategoriesController } from "./controllers/fetch-all-categories.controller";
+import { FetchProductsBySellerIdController } from "./controllers/fetch-products-by-seller-id.controller";
+import { FetchProductsBySellerIdUseCase } from "@/domain/marketplace/application/use-cases/fetch-products-by-seller-id";
+import { FetchProductsUseCase } from "@/domain/marketplace/application/use-cases/fetch-all-products";
+import { FetchProductsController } from "./controllers/fetch-all-products.controller";
+import { GetSellerProfileUseCase } from "@/domain/marketplace/application/use-cases/get-seller-profile";
+import { GetSellerProfileController } from "./controllers/get-seller-profile.controller";
 
 @Module({
   imports: [DatabaseModule, CryptographyModule, StorageModule],
@@ -45,6 +55,11 @@ import { EditProductUseCase } from "@/domain/marketplace/application/use-cases/e
     GetCountSellersViewsController,
     GetCountProductViews7daysController,
     EditProductController,
+    EditSellerController,
+    FetchAllCategoriesController,
+    FetchProductsBySellerIdController,
+    FetchProductsController,
+    GetSellerProfileController
   ],
   providers: [
     RegisterSellerUseCase,
@@ -59,7 +74,12 @@ import { EditProductUseCase } from "@/domain/marketplace/application/use-cases/e
     CountSellerViewsPerDayUseCase,
     CountSellerViewsUseCase,
     CountViewsProduct7daysUseCase,
-    EditProductUseCase
+    EditProductUseCase,
+    EditSellerUseCase,
+    FetchAllCategoriesUseCase,
+    FetchProductsBySellerIdUseCase,
+    FetchProductsUseCase,
+    GetSellerProfileUseCase
   ],
 })
 

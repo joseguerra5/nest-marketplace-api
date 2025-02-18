@@ -6,8 +6,10 @@ import { JwtService } from '@nestjs/jwt'
 import { Test } from '@nestjs/testing'
 import { hash } from 'bcryptjs'
 import request from 'supertest'
+import { AttachmentFactory } from 'test/factories/make-attachment'
 import { CategoryFactory } from 'test/factories/make-category'
 import { ProductFactory } from 'test/factories/make-product'
+import { ProductAttachmentFactory } from 'test/factories/make-product-attachment'
 import { SellerFactory } from 'test/factories/make-seller'
 
 
@@ -16,13 +18,15 @@ describe('Change product status (E2E)', () => {
   let prisma: PrismaService
   let sellerFactory: SellerFactory
   let productFactory: ProductFactory
+  let attachmentFactory: AttachmentFactory
+  let productAttachmentFactory: ProductAttachmentFactory
   let categoryFactory: CategoryFactory
   let jwt: JwtService
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [SellerFactory, ProductFactory, CategoryFactory],
+      providers: [SellerFactory, ProductFactory, CategoryFactory, AttachmentFactory, ProductAttachmentFactory],
     }).compile()
 
     app = moduleRef.createNestApplication()
@@ -30,6 +34,8 @@ describe('Change product status (E2E)', () => {
     prisma = moduleRef.get(PrismaService)
     sellerFactory = moduleRef.get(SellerFactory)
     productFactory = moduleRef.get(ProductFactory)
+    attachmentFactory = moduleRef.get(AttachmentFactory)
+    productAttachmentFactory = moduleRef.get(ProductAttachmentFactory)
     categoryFactory = moduleRef.get(CategoryFactory)
 
     jwt = moduleRef.get(JwtService)
@@ -49,21 +55,35 @@ describe('Change product status (E2E)', () => {
       categoryId: category.id
     })
 
+    const attachment1 = await attachmentFactory.makePrismaAttachment()
+    const attachment2 = await attachmentFactory.makePrismaAttachment()
+
+    await productAttachmentFactory.makePrismaProductAttachment({
+      attachmentId: attachment1.id,
+      productId: product.id,
+    })
+
+    await productAttachmentFactory.makePrismaProductAttachment({
+      attachmentId: attachment2.id,
+      productId: product.id,
+    })
+
+    const attachment3 = await attachmentFactory.makePrismaAttachment()
+
 
     const response = await request(app.getHttpServer())
       .put(`/products/${product.id.toString()}`)
       .set('Authorization', `Bearer ${accessToken}`)
       .send({
-        attachmentsIds: ["1", "2"],
         categoryId: category.id.toString(),
         description: "test",
         priceInCents: 123123,
         productId: product.id.toString(),
         sellerId: user.id.toString(),
         title: "test",
+        attachments: [attachment1.id.toString(), attachment3.id.toString()],
       })
 
-    console.log(response.body.errors.details)
 
     expect(response.statusCode).toBe(200)
 

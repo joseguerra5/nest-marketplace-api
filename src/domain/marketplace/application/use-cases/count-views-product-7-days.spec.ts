@@ -9,18 +9,25 @@ import { ProductStatus } from "../../enterprise/entities/product";
 import { InMemoryViewRepository } from "test/repositories/in-memory-view-repository";
 import { makeView } from "test/factories/make-view";
 import { CountViewsProduct7daysUseCase } from "./count-views-product-7-days";
+import { InMemoryProductAttachmentRepository } from "test/repositories/in-memory-product-attachment-repository";
+import { InMemoryAvatarAttachmentRepository } from "test/repositories/in-memory-avatar-attachments-repository";
 
 let inMemoryProductRepository: InMemoryProductRepository
 let inMemorySellerRepository: InMemorySellerRepository
 let inMemoryCategoryRepository: InMemoryCategoryRepository
 let inMemoryViewRepository: InMemoryViewRepository
+let inMemoryProductAttachmentRepository: InMemoryProductAttachmentRepository
+let inMemoryAvatarAttachmentRepository: InMemoryAvatarAttachmentRepository
 let sut: CountViewsProduct7daysUseCase
 
 describe("Get product view count", () => {
   beforeEach(() => {
-    inMemoryProductRepository = new InMemoryProductRepository()
-    inMemorySellerRepository = new InMemorySellerRepository()
     inMemoryCategoryRepository = new InMemoryCategoryRepository()
+    inMemoryCategoryRepository = new InMemoryCategoryRepository()
+    inMemoryAvatarAttachmentRepository = new InMemoryAvatarAttachmentRepository()
+    inMemoryProductAttachmentRepository = new InMemoryProductAttachmentRepository()
+    inMemoryProductRepository = new InMemoryProductRepository(inMemorySellerRepository, inMemoryCategoryRepository, inMemoryProductAttachmentRepository)
+    inMemorySellerRepository = new InMemorySellerRepository(inMemoryAvatarAttachmentRepository)
     inMemoryViewRepository = new InMemoryViewRepository(inMemoryProductRepository)
     sut = new CountViewsProduct7daysUseCase(inMemoryProductRepository, inMemoryViewRepository)
 

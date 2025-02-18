@@ -9,19 +9,26 @@ import { ProductStatus } from "../../enterprise/entities/product";
 import { InMemoryViewRepository } from "test/repositories/in-memory-view-repository";
 import { makeView } from "test/factories/make-view";
 import { CountSellerViewsPerDayUseCase } from "./count-seller-views-per-day";
+import { InMemoryAvatarAttachmentRepository } from "test/repositories/in-memory-avatar-attachments-repository";
+import { InMemoryProductAttachmentRepository } from "test/repositories/in-memory-product-attachment-repository";
 
 let inMemoryProductRepository: InMemoryProductRepository
 let inMemorySellerRepository: InMemorySellerRepository
 let inMemoryCategoryRepository: InMemoryCategoryRepository
 let inMemoryViewRepository: InMemoryViewRepository
+let inMemoryAvatarAttachmentRepository: InMemoryAvatarAttachmentRepository
+let inMemoryProductAttachmentRepository: InMemoryProductAttachmentRepository
 let sut: CountSellerViewsPerDayUseCase
 
 describe("Get seller views count per day", () => {
   beforeEach(() => {
-    inMemoryProductRepository = new InMemoryProductRepository()
-    inMemorySellerRepository = new InMemorySellerRepository()
     inMemoryCategoryRepository = new InMemoryCategoryRepository()
-    inMemoryViewRepository = new InMemoryViewRepository(inMemoryProductRepository)
+        inMemoryCategoryRepository = new InMemoryCategoryRepository()
+        inMemoryAvatarAttachmentRepository = new InMemoryAvatarAttachmentRepository()
+        inMemoryProductAttachmentRepository = new InMemoryProductAttachmentRepository()
+        inMemoryProductRepository = new InMemoryProductRepository(inMemorySellerRepository, inMemoryCategoryRepository, inMemoryProductAttachmentRepository)
+        inMemorySellerRepository = new InMemorySellerRepository(inMemoryAvatarAttachmentRepository)
+        inMemoryViewRepository = new InMemoryViewRepository(inMemoryProductRepository)
     sut = new CountSellerViewsPerDayUseCase(inMemorySellerRepository, inMemoryViewRepository)
 
     vi.useFakeTimers()

@@ -18,6 +18,7 @@ export class PrismaProductWithDetailsMapper {
       productId: new UniqueEntityId(raw.id),
       priceInCents: raw.priceInCents,
       description: raw.description,
+      createdAt: raw.createdAt,
       status: raw.status as ProductStatus,
       title: raw.title,
       owner: Seller.create({

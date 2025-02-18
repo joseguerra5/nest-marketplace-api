@@ -22,7 +22,7 @@ describe("Get product by id", () => {
     inMemoryCategoryRepository = new InMemoryCategoryRepository()
     inMemoryAvatarAttachmentRepository = new InMemoryAvatarAttachmentRepository()
     inMemorySellerRepository = new InMemorySellerRepository(inMemoryAvatarAttachmentRepository)
-    inMemoryProductRepository = new InMemoryProductRepository(inMemorySellerRepository, inMemoryCategoryRepository, inMemoryAvatarAttachmentRepository, inMemoryProductAttachmentRepository)
+    inMemoryProductRepository = new InMemoryProductRepository(inMemorySellerRepository, inMemoryCategoryRepository, inMemoryProductAttachmentRepository)
     sut = new GetProductUseCase(inMemoryProductRepository)
   });
   it("should be able to edit a Product", async () => {
@@ -32,7 +32,7 @@ describe("Get product by id", () => {
     const category = makeCategory()
     await inMemoryCategoryRepository.create(category)
 
-    const product = makeProduct({ sellerId: seller.id, categoryId: category.id.toValue() })
+    const product = makeProduct({ sellerId: seller.id, categoryId: category.id })
     await inMemoryProductRepository.create(product)
 
     const result = await sut.execute({

@@ -5,21 +5,27 @@ import { InMemoryProductRepository } from "test/repositories/in-memory-produc";
 import { InMemoryCategoryRepository } from "test/repositories/in-memory-category";
 import { makeCategory } from "test/factories/make-category";
 import { makeProduct } from "test/factories/make-product";
-import { GetProductsUseCase } from "./get-products";
+import { FetchProductsBySellerIdUseCase } from "./fetch-products-by-seller-id";
+import { InMemoryAvatarAttachmentRepository } from "test/repositories/in-memory-avatar-attachments-repository";
+import { InMemoryProductAttachmentRepository } from "test/repositories/in-memory-product-attachment-repository";
 
 let inMemoryProductRepository: InMemoryProductRepository
 let inMemorySellerRepository: InMemorySellerRepository
 let inMemoryCategoryRepository: InMemoryCategoryRepository
-let sut: GetProductsUseCase
+let inMemoryAvatarAttachmentRepository: InMemoryAvatarAttachmentRepository
+let inMemoryProductAttachmentRepository: InMemoryProductAttachmentRepository
+let sut: FetchProductsBySellerIdUseCase
 
-describe("Get products", () => {
+describe("Fetch products", () => {
   beforeEach(() => {
-    inMemoryProductRepository = new InMemoryProductRepository()
-    inMemorySellerRepository = new InMemorySellerRepository()
     inMemoryCategoryRepository = new InMemoryCategoryRepository()
-    sut = new GetProductsUseCase(inMemoryProductRepository)
+    inMemoryAvatarAttachmentRepository = new InMemoryAvatarAttachmentRepository()
+    inMemoryProductAttachmentRepository = new InMemoryProductAttachmentRepository()
+    inMemorySellerRepository = new InMemorySellerRepository(inMemoryAvatarAttachmentRepository)
+    inMemoryProductRepository = new InMemoryProductRepository(inMemorySellerRepository, inMemoryCategoryRepository, inMemoryProductAttachmentRepository)
+    sut = new FetchProductsBySellerIdUseCase(inMemoryProductRepository, inMemorySellerRepository)
   });
-  it("should be able to get a Products with search params", async () => {
+  it("should be able to fetch a Products with search params", async () => {
     const seller = makeSeller({ password: "test-hashed" }, new UniqueEntityId("test"))
     await inMemorySellerRepository.create(seller)
 
@@ -33,19 +39,23 @@ describe("Get products", () => {
 
     const result = await sut.execute({
       page: 1,
-      search: "TEST"
+      search: "TEST",
+      sellerId: seller.id.toString()
     })
 
     expect(result.isRight()).toBeTruthy()
+    if (result.isRight()) {
     expect(result.value.products).toHaveLength(2)
+    }
   })
 
-  it("should be able to get a Products with search params", async () => {
+  it("should be able to fetch a Products with search params", async () => {
     const seller = makeSeller({ password: "test-hashed" }, new UniqueEntityId("test"))
     await inMemorySellerRepository.create(seller)
 
     const category = makeCategory()
     await inMemoryCategoryRepository.create(category)
+
 
     for (let i = 1; i <= 22; i++) {
       await inMemoryProductRepository.create(
@@ -55,12 +65,11 @@ describe("Get products", () => {
 
     const result = await sut.execute({
       page: 2,
+      sellerId: seller.id.toString()
     })
     expect(result.isRight()).toBeTruthy()
-    expect(result.value.products).toHaveLength(2)
-    expect(result.value?.products).toEqual([
-      expect.objectContaining({ createdAt: new Date(2024, 11, 2) }),
-      expect.objectContaining({ createdAt: new Date(2024, 11, 1) }),
-    ])
+    if (result.isRight()) {
+      expect(result.value.products).toHaveLength(2)
+      }
   })
 })

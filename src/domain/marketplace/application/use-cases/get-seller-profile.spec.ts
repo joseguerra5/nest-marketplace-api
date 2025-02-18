@@ -2,13 +2,16 @@ import { InMemorySellerRepository } from "test/repositories/in-memory-seller-rep
 import { makeSeller } from "test/factories/make-seller";
 import { UniqueEntityId } from "@/core/entities/unique-entity-id";
 import { GetSellerProfileUseCase } from "./get-seller-profile";
+import { InMemoryAvatarAttachmentRepository } from "test/repositories/in-memory-avatar-attachments-repository";
 
 let inMemorySellerRepository: InMemorySellerRepository
+let inMemoryAvatarAttachmentRepository: InMemoryAvatarAttachmentRepository
 let sut: GetSellerProfileUseCase
 
 describe("Get Seller profile", () => {
   beforeEach(() => {
-    inMemorySellerRepository = new InMemorySellerRepository()
+    inMemoryAvatarAttachmentRepository = new InMemoryAvatarAttachmentRepository()
+    inMemorySellerRepository = new InMemorySellerRepository(inMemoryAvatarAttachmentRepository)
     sut = new GetSellerProfileUseCase(inMemorySellerRepository)
   });
   it("should be able to get a seller profile", async () => {

@@ -10,11 +10,21 @@ export class PrismaAvatarRepository implements AvatarAttachmentsRepository {
     private prisma: PrismaService,
   ) { }
   async create(attachments: AvatarAttachment): Promise<void> {
+    
+    if (!attachments.sellerId) {
+      return
+    }
+
     const data = PrismaAvatarMapper.toPrismaUpdate(attachments)
+
 
     await this.prisma.attachment.update(data)
   }
   async delete(attachments: AvatarAttachment): Promise<void> {
+    if (!attachments) {
+      return
+    }
+
     await this.prisma.attachment.delete({
       where: {
         id: attachments.id.toString()
@@ -38,10 +48,20 @@ export class PrismaAvatarRepository implements AvatarAttachmentsRepository {
   }
 
   async deleteBySellerId(avatarId: string): Promise<void> {
+    if (!avatarId) {
+      return;
+    }
+  
+    const avatarExists = await this.prisma.attachment.findUnique({
+      where: { id: avatarId },
+    });
+  
+    if (!avatarExists) {
+      return; // Retorna sem tentar excluir para evitar erro
+    }
+  
     await this.prisma.attachment.delete({
-      where: {
-        id: avatarId
-      }
-    })
-  }
+      where: { id: avatarId },
+    });
+  }  
 }

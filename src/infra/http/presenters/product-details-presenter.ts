@@ -7,6 +7,7 @@ export class ProductDetailsPresenter {
       title: productDetails.title,
       description: productDetails.description,
       priceInCents: productDetails.priceInCents,
+      createdAt: productDetails.createdAt,
       status: productDetails.status,
       owner: {
         id: productDetails.owner.sellerId,

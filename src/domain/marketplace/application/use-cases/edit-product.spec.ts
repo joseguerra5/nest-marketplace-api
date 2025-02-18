@@ -11,19 +11,22 @@ import { NotAllowedError } from "@/core/errors/not-allowed-error";
 import { ValuesNotFoundError } from "./errors/value-not-found";
 import { ProductStatus } from "../../enterprise/entities/product";
 import { makeProductAttachment } from "test/factories/make-product-attachment";
+import { InMemoryAvatarAttachmentRepository } from "test/repositories/in-memory-avatar-attachments-repository";
 
 let inMemoryProductRepository: InMemoryProductRepository
 let inMemoryProductAttachmentRepository: InMemoryProductAttachmentRepository
 let inMemorySellerRepository: InMemorySellerRepository
+let inMemorAvatarAttachmentRepository: InMemoryAvatarAttachmentRepository
 let inMemoryCategoryRepository: InMemoryCategoryRepository
 let sut: EditProductUseCase
 
 describe("Edit Seller", () => {
   beforeEach(() => {
-    inMemoryProductRepository = new InMemoryProductRepository()
     inMemoryProductAttachmentRepository = new InMemoryProductAttachmentRepository()
-    inMemorySellerRepository = new InMemorySellerRepository()
+    inMemorAvatarAttachmentRepository = new InMemoryAvatarAttachmentRepository()
     inMemoryCategoryRepository = new InMemoryCategoryRepository()
+    inMemorySellerRepository = new InMemorySellerRepository(inMemorAvatarAttachmentRepository)
+    inMemoryProductRepository = new InMemoryProductRepository(inMemorySellerRepository, inMemoryCategoryRepository, inMemoryProductAttachmentRepository)
     sut = new EditProductUseCase(inMemoryProductRepository, inMemoryProductAttachmentRepository, inMemoryCategoryRepository)
   });
   it("should be able to edit a Product", async () => {

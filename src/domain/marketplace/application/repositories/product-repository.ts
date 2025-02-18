@@ -28,4 +28,7 @@ export abstract class ProductRepository {
   abstract findManyWithParams(
     params: PaginationProductsParams
   ): Promise<Product[]>
+  abstract findManyWithParamsAndDetails(
+    params: PaginationProductsParams
+  ): Promise<ProductWithDetails[]>
 }

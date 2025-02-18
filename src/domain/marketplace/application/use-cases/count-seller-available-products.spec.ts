@@ -8,16 +8,23 @@ import { makeProduct } from "test/factories/make-product";
 import { CountSellerAvailableProductsUseCase } from "./count-seller-available-products";
 import { ProductStatus } from "../../enterprise/entities/product";
 import { NotAllowedError } from "@/core/errors/not-allowed-error";
+import { InMemoryProductAttachmentRepository } from "test/repositories/in-memory-product-attachment-repository";
+import { InMemoryAvatarAttachmentRepository } from "test/repositories/in-memory-avatar-attachments-repository";
 
 let inMemoryProductRepository: InMemoryProductRepository
 let inMemorySellerRepository: InMemorySellerRepository
 let inMemoryCategoryRepository: InMemoryCategoryRepository
+let inMemoryProductAttachmentRepository: InMemoryProductAttachmentRepository
+let inMemorAvatarAttachmentRepository: InMemoryAvatarAttachmentRepository
 let sut: CountSellerAvailableProductsUseCase
 
 describe("Get available product count", () => {
   beforeEach(() => {
-    inMemoryProductRepository = new InMemoryProductRepository()
-    inMemorySellerRepository = new InMemorySellerRepository()
+    inMemoryProductAttachmentRepository = new InMemoryProductAttachmentRepository() 
+    inMemorAvatarAttachmentRepository = new InMemoryAvatarAttachmentRepository()
+    inMemoryProductRepository = new InMemoryProductRepository(inMemorySellerRepository, inMemoryCategoryRepository, inMemoryProductAttachmentRepository)
+    inMemorySellerRepository = new InMemorySellerRepository(inMemorAvatarAttachmentRepository)
+    
     inMemoryCategoryRepository = new InMemoryCategoryRepository()
     sut = new CountSellerAvailableProductsUseCase(inMemoryProductRepository, inMemorySellerRepository)
 

@@ -15,6 +15,30 @@ export class PrismaProductRepository implements ProductRepository {
     private prisma: PrismaService,
     private productAttachmentRepository: ProductAttachmentsRepository
   ) { }
+  async findManyWithParamsAndDetails({page, search, sellerId, status}: PaginationProductsParams): Promise<ProductWithDetails[]> {
+    const products = await this.prisma.product.findMany({
+      where: {
+        sellerId,
+        status: status ? status.toUpperCase() as ProductStatus : undefined,
+        OR: search ? [
+          { title: { contains: search, mode: "insensitive" } },
+          { description: { contains: search, mode: "insensitive" } }
+        ] : undefined
+      },
+      include: {
+        seller: true,
+        category: true,
+        attachments: true
+      },
+      orderBy: {
+        createdAt: "desc"
+      },
+      take: 20,
+      skip: (page - 1) * 20
+    })
+
+    return products.map(PrismaProductWithDetailsMapper.toDomain);
+  }
   async findByIdWithDetails(id: string): Promise<ProductWithDetails | null> {
     const product = await this.prisma.product.findUnique({
       where: {

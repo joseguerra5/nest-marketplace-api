@@ -26,10 +26,10 @@ export class AvatarAttachmentFactory {
 
     await this.prisma.attachment.update({
       where: {
-        id: avatar.attachmentId.toValue()
+        id: avatar.attachmentId.toString()
       },
       data: {
-        userId: avatar.sellerId.toValue()
+        userId: avatar.sellerId.toString()
       },
     })
 

@@ -9,20 +9,26 @@ import { ProductStatus } from "../../enterprise/entities/product";
 import { CountSellerViewsUseCase } from "./count-seller-views";
 import { InMemoryViewRepository } from "test/repositories/in-memory-view-repository";
 import { makeView } from "test/factories/make-view";
+import { InMemoryAvatarAttachmentRepository } from "test/repositories/in-memory-avatar-attachments-repository";
+import { InMemoryProductAttachmentRepository } from "test/repositories/in-memory-product-attachment-repository";
 
 let inMemoryProductRepository: InMemoryProductRepository
 let inMemorySellerRepository: InMemorySellerRepository
 let inMemoryCategoryRepository: InMemoryCategoryRepository
 let inMemoryViewRepository: InMemoryViewRepository
+let inMemoryAvatarAttachmentRepository: InMemoryAvatarAttachmentRepository
+let inMemoryProductAttachmentRepository: InMemoryProductAttachmentRepository
 let sut: CountSellerViewsUseCase
 
 describe("Get seller views count ", () => {
   beforeEach(() => {
-    inMemoryProductRepository = new InMemoryProductRepository()
-    inMemorySellerRepository = new InMemorySellerRepository()
     inMemoryCategoryRepository = new InMemoryCategoryRepository()
+    inMemoryAvatarAttachmentRepository = new InMemoryAvatarAttachmentRepository()
+    inMemoryProductAttachmentRepository = new InMemoryProductAttachmentRepository()
+    inMemoryProductRepository = new InMemoryProductRepository(inMemorySellerRepository, inMemoryCategoryRepository, inMemoryProductAttachmentRepository)
+    inMemorySellerRepository = new InMemorySellerRepository(inMemoryAvatarAttachmentRepository)
     inMemoryViewRepository = new InMemoryViewRepository(inMemoryProductRepository)
-    sut = new CountSellerViewsUseCase(inMemoryProductRepository, inMemorySellerRepository, inMemoryViewRepository)
+    sut = new CountSellerViewsUseCase(inMemorySellerRepository, inMemoryViewRepository)
 
     vi.useFakeTimers()
   });

@@ -6,6 +6,7 @@ import { EditSellerUseCase } from "./edit-seller";
 import { AlreadyInUseError } from "./errors/already-in-use";
 import { NotAllowedError } from "@/core/errors/not-allowed-error";
 import { InMemoryAvatarAttachmentRepository } from "test/repositories/in-memory-avatar-attachments-repository";
+import { AvatarAttachment } from "../../enterprise/entities/avatar-attachment";
 
 let inMemorySellerRepository: InMemorySellerRepository
 let inMemoryAvatarAttachmentRepository: InMemoryAvatarAttachmentRepository
@@ -19,10 +20,10 @@ describe("Edit Seller", () => {
     inMemorySellerRepository = new InMemorySellerRepository(inMemoryAvatarAttachmentRepository)
     fakeHasher = new FakeHasher()
     fakeEncrypter = new FakeHasher()
-    sut = new EditSellerUseCase(inMemorySellerRepository, fakeHasher, fakeEncrypter)
+    sut = new EditSellerUseCase(inMemorySellerRepository, inMemoryAvatarAttachmentRepository, fakeHasher, fakeEncrypter)
   });
   it("should be able to edit a current seller", async () => {
-    const seller = makeSeller({ password: "test-hashed" }, new UniqueEntityId("test"))
+    const seller = makeSeller({ password: "test-hashed", avatar: AvatarAttachment.create({sellerId: new UniqueEntityId("test"), attachmentId: new UniqueEntityId("test attachment")})}, new UniqueEntityId("test"))
     await inMemorySellerRepository.create(seller)
 
     const result = await sut.execute({
@@ -31,7 +32,8 @@ describe("Edit Seller", () => {
       name: "new-name",
       password: "test",
       phone: "new-phone",
-      newPassword: "new-password"
+      newPassword: "new-password",
+      attachmentId: "2"
     })
 
     expect(result.isRight()).toBeTruthy()
@@ -39,7 +41,7 @@ describe("Edit Seller", () => {
       email: "new-email",
       name: "new-name",
       phone: "new-phone",
-      password: "new-password-hashed"
+      password: "new-password-hashed",
     }))
   })
 

@@ -7,6 +7,7 @@ import { Category } from "../category";
 export interface ProductWithDetailsProps {
   productId: UniqueEntityId
   title: string
+  createdAt: Date
   description: string
   priceInCents: number
   status: ProductStatus
@@ -36,6 +37,10 @@ export class ProductWithDetails extends ValueObject<ProductWithDetails> {
   }
   get category() {
     return this.props.category
+  }
+
+  get createdAt() {
+    return this.props.createdAt
   }
 
 

@@ -11,10 +11,11 @@ export function makeProduct(
 ) {
   const product = Product.create({
     title: faker.commerce.productName(),
+    createdAt: overide.createdAt || new Date(),
     description: faker.commerce.productDescription(),
     priceInCents: faker.number.int({ max: 10000 }),
-    sellerId: new UniqueEntityId(),
-    categoryId: new UniqueEntityId(),
+    sellerId: overide.sellerId ?? new UniqueEntityId(),
+    categoryId: overide.categoryId ?? new UniqueEntityId(),
     ...overide
   }, id)
   return product

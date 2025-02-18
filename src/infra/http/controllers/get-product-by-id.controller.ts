@@ -1,18 +1,9 @@
 import { BadRequestException, ConflictException, Controller, Get, HttpCode, Param } from "@nestjs/common";
-import { z } from "zod";
 import { ValuesNotFoundError } from "@/domain/marketplace/application/use-cases/errors/value-not-found";
 import { GetProductUseCase } from "@/domain/marketplace/application/use-cases/get-product-by-id";
 import { ProductDetailsPresenter } from "../presenters/product-details-presenter";
 
-export const getBodySchema = z.object({
-  categoryId: z.string(),
-  title: z.string(),
-  description: z.string(),
-  priceInCents: z.number(),
-  attachments: z.array(z.string()),
-})
 
-export type GetBodySchema = z.infer<typeof getBodySchema>
 @Controller("/products/:productId")
 export class GetProductByIdController {
   constructor(private sut: GetProductUseCase) { }

@@ -9,17 +9,23 @@ import { ChangeProductStatusBySellerIdUseCase } from "./change-product-status";
 import { NotAllowedError } from "@/core/errors/not-allowed-error";
 import { ProductWithSameStatus } from "./errors/same-status";
 import { ProductStatus } from "../../enterprise/entities/product";
+import { InMemoryProductAttachmentRepository } from "test/repositories/in-memory-product-attachment-repository";
+import { InMemoryAvatarAttachmentRepository } from "test/repositories/in-memory-avatar-attachments-repository";
 
 let inMemoryProductRepository: InMemoryProductRepository
 let inMemorySellerRepository: InMemorySellerRepository
 let inMemoryCategoryRepository: InMemoryCategoryRepository
+let inMemoryProductAttachmentRepository: InMemoryProductAttachmentRepository
+let inMemorAvatarAttachmentRepository: InMemoryAvatarAttachmentRepository
 let sut: ChangeProductStatusBySellerIdUseCase
 
 describe("Edit Seller", () => {
   beforeEach(() => {
-    inMemoryProductRepository = new InMemoryProductRepository()
-    inMemorySellerRepository = new InMemorySellerRepository()
     inMemoryCategoryRepository = new InMemoryCategoryRepository()
+    inMemoryProductAttachmentRepository = new InMemoryProductAttachmentRepository()
+    inMemorAvatarAttachmentRepository = new InMemoryAvatarAttachmentRepository()
+    inMemoryProductRepository = new InMemoryProductRepository(inMemorySellerRepository, inMemoryCategoryRepository, inMemoryProductAttachmentRepository)
+    inMemorySellerRepository = new InMemorySellerRepository(inMemorAvatarAttachmentRepository)
     sut = new ChangeProductStatusBySellerIdUseCase(inMemoryProductRepository, inMemorySellerRepository)
   });
   it("should be able to change a Product status", async () => {

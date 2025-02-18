@@ -81,7 +81,7 @@ export class Seller extends Entity<SellerProps> {
     }
     const seller = new Seller({
       ...props,
-      avatar: props.createdAt ?? AvatarAttachment.create({
+      avatar: props.avatar ?? AvatarAttachment.create({
         sellerId: idSet
       }),
       createdAt: props.createdAt ?? new Date()

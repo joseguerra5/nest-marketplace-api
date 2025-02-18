@@ -13,7 +13,7 @@ export class InMemoryAvatarAttachmentRepository implements AvatarAttachmentsRepo
     this.items.splice(itemIndex, 1)
   }
   async findBySellerId(sellerId: string): Promise<AvatarAttachment | null> {
-    const avatar = this.items.find((item) => item.SellerId.toString() === sellerId)
+    const avatar = this.items.find((item) => item.sellerId === sellerId)
 
     if (!avatar) {
       return null
@@ -22,7 +22,7 @@ export class InMemoryAvatarAttachmentRepository implements AvatarAttachmentsRepo
     return avatar
   }
   async deleteBySellerId(avatarId: string): Promise<void> {
-    const itemIndex = this.items.findIndex((item) => item.SellerId === avatarId)
+    const itemIndex = this.items.findIndex((item) => item.sellerId === avatarId)
 
     this.items.splice(itemIndex, 1)
   }

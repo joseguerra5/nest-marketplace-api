@@ -5,15 +5,18 @@ import { AuthenticateSellerUseCase } from "./authenticate-seller";
 import { FakeEncrypter } from "test/cryptography/fake-encrypter";
 import { UniqueEntityId } from "@/core/entities/unique-entity-id";
 import { WrongCredentialsError } from "./errors/wrong-credentials-error";
+import { InMemoryAvatarAttachmentRepository } from "test/repositories/in-memory-avatar-attachments-repository";
 
 let inMemorySellerRepository: InMemorySellerRepository
+let inMemoryAvatarAttachmentRepository: InMemoryAvatarAttachmentRepository
 let fakeHasher: FakeHasher
 let encrypter: FakeEncrypter
 let sut: AuthenticateSellerUseCase
 
 describe("RegisterSeller", () => {
   beforeEach(() => {
-    inMemorySellerRepository = new InMemorySellerRepository()
+    inMemoryAvatarAttachmentRepository = new InMemoryAvatarAttachmentRepository()
+    inMemorySellerRepository = new InMemorySellerRepository(inMemoryAvatarAttachmentRepository)
     fakeHasher = new FakeHasher()
     encrypter = new FakeEncrypter()
     sut = new AuthenticateSellerUseCase(inMemorySellerRepository, fakeHasher, encrypter)

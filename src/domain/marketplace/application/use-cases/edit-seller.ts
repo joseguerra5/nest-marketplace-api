@@ -7,12 +7,16 @@ import { NotAllowedError } from "@/core/errors/not-allowed-error";
 import { PasswordsDoNotMatch } from "./errors/password-dont-match";
 import { AlreadyInUseError } from "./errors/already-in-use";
 import { Injectable } from "@nestjs/common";
+import { AvatarAttachment } from "../../enterprise/entities/avatar-attachment";
+import { AvatarAttachmentsRepository } from "../repositories/avatar-repository";
+import { UniqueEntityId } from "@/core/entities/unique-entity-id";
 
 interface EditSellerUseCaseRequest {
   sellerId: string
   name: string
   phone: string
   email: string
+  attachmentId?: string
   password: string
   newPassword?: string | null
 }
@@ -25,6 +29,7 @@ type EditSellerUseCaseResponse = Either<NotAllowedError | PasswordsDoNotMatch | 
 export class EditSellerUseCase {
   constructor(
     private sellerRepository: SellerRepository,
+    private avatarAttachment: AvatarAttachmentsRepository,
     private hashGenerator: HashGenerator,
     private hashComparer: HashComparer
   ) { }
@@ -34,7 +39,8 @@ export class EditSellerUseCase {
     password,
     newPassword,
     phone,
-    sellerId
+    sellerId,
+    attachmentId
   }: EditSellerUseCaseRequest): Promise<EditSellerUseCaseResponse> {
     let hasChanges = false
     const seller = await this.sellerRepository.findById(sellerId)
@@ -91,6 +97,20 @@ export class EditSellerUseCase {
     if (seller.phone !== phone) {
       seller.phone = phone
       hasChanges = true
+    }
+
+    if (attachmentId) {
+      const currentAvatar = await this.avatarAttachment.findBySellerId(sellerId)
+
+      if (currentAvatar?.id.toString() !== attachmentId) {
+        const avatarAttachment = AvatarAttachment.create({
+          sellerId: new UniqueEntityId(sellerId),
+          attachmentId: new UniqueEntityId(attachmentId)
+        })
+
+        seller.avatar = avatarAttachment
+        hasChanges = true
+      }
     }
 
 

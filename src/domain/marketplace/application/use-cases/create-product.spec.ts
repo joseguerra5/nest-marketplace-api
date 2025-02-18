@@ -6,17 +6,23 @@ import { CreateProductUseCase } from "./create-product";
 import { InMemoryCategoryRepository } from "test/repositories/in-memory-category";
 import { makeCategory } from "test/factories/make-category";
 import { ValuesNotFoundError } from "./errors/value-not-found";
+import { InMemoryAvatarAttachmentRepository } from "test/repositories/in-memory-avatar-attachments-repository";
+import { InMemoryProductAttachmentRepository } from "test/repositories/in-memory-product-attachment-repository";
 
 let inMemoryProductRepository: InMemoryProductRepository
 let inMemorySellerRepository: InMemorySellerRepository
 let inMemoryCategoryRepository: InMemoryCategoryRepository
+let inMemoryAvatarAttachmentRepository: InMemoryAvatarAttachmentRepository
+let inMemoryProductAttachmentRepository: InMemoryProductAttachmentRepository
 let sut: CreateProductUseCase
 
 describe("Create a product", () => {
   beforeEach(() => {
-    inMemoryProductRepository = new InMemoryProductRepository()
-    inMemorySellerRepository = new InMemorySellerRepository()
+    inMemoryAvatarAttachmentRepository = new InMemoryAvatarAttachmentRepository()
+    inMemoryProductAttachmentRepository = new InMemoryProductAttachmentRepository()
     inMemoryCategoryRepository = new InMemoryCategoryRepository()
+    inMemoryProductRepository = new InMemoryProductRepository(inMemorySellerRepository, inMemoryCategoryRepository, inMemoryProductAttachmentRepository)
+    inMemorySellerRepository = new InMemorySellerRepository(inMemoryAvatarAttachmentRepository)
     sut = new CreateProductUseCase(inMemoryProductRepository, inMemorySellerRepository, inMemoryCategoryRepository)
   });
   it("should be able to create a product", async () => {

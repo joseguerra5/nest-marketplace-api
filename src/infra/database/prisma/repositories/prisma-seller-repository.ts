@@ -20,22 +20,24 @@ export class PrismaSellerRepository implements SellerRepository {
   async save(seller: Seller): Promise<void> {
     const data = PrismaSellerMapper.toPersistence(seller);
 
+  // Atualiza o seller no banco de dados
+  await this.prisma.user.update({
+    where: {
+      id: data.id
+    },
+    data,
+  });
+
+  // Verifica se há um avatar antes de fazer as operações relacionadas a ele
+  if (seller.avatar) {
     await Promise.all([
-      this.prisma.user.update({
-        where: {
-          id: data.id
-        },
-        data,
-      }),
+      // Cria o novo avatar
+      this.avatarAttachmentRepository.create(seller.avatar),
 
-      this.avatarAttachmentRepository.create(
-        seller.avatar
-      ),
-
-      this.avatarAttachmentRepository.deleteBySellerId(
-        seller.id.toString()
-      ),
-    ])
+      // Deleta o avatar anterior (se houver)
+      this.avatarAttachmentRepository.deleteBySellerId(seller.id.toString()),
+    ]);
+  }
   }
   async findByEmail(email: string): Promise<Seller | null> {
     const seller = await this.prisma.user.findUnique({

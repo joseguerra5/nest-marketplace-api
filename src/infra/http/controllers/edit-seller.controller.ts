@@ -1,42 +1,49 @@
-import { BadRequestException, Body, ConflictException, Controller, HttpCode, Param, Put } from "@nestjs/common";
+import { BadRequestException, Body, ConflictException, Controller, HttpCode, Put } from "@nestjs/common";
 import { z } from "zod";
 import { ZodValidationPipe } from "../pipes/zod-validation-pipe";
 import { CurrentUser } from "@/infra/auth/current-user-decorator";
 import { UserPayload } from "@/infra/auth/jwt.estrategy";
 import { ValuesNotFoundError } from "@/domain/marketplace/application/use-cases/errors/value-not-found";
-import { EditProductUseCase } from "@/domain/marketplace/application/use-cases/edit-product";
+import { EditSellerUseCase } from "@/domain/marketplace/application/use-cases/edit-seller";
 
 export const editBodySchema = z.object({
-  categoryId: z.string(),
-  title: z.string(),
-  description: z.string(),
-  priceInCents: z.number(),
-  attachments: z.array(z.string().uuid()),
+  name: z.string(),
+  phone: z.string(),
+  email: z.string(),
+  password: z.string(),
+  newPassword: z.string().optional(),
+  avatarId: z.string().optional()
 })
 
 export type EditBodySchema = z.infer<typeof editBodySchema>
-@Controller("/products/:productId")
-export class EditProductController {
-  constructor(private sut: EditProductUseCase) { }
+@Controller("/sellers")
+export class EditSellerController {
+  constructor(private sut: EditSellerUseCase) { }
   @Put()
   @HttpCode(200)
   async handle(
     @CurrentUser() user: UserPayload,
-    @Param("productId") productId: string,
     @Body(new ZodValidationPipe(editBodySchema)) body: EditBodySchema,
   ) {
-    const { attachments, categoryId, description, priceInCents, title } = body
+    const { 
+      email,
+      name,
+      password,
+      newPassword,
+      phone,
+      avatarId
+    } = body
 
     const userId = user.sub
 
     const result = await this.sut.execute({
-      attachmentsIds: attachments,
-      categoryId,
-      description,
-      priceInCents,
-      productId,
+      email,
+      name,
+      password,
+      newPassword,
+      phone,
       sellerId: userId,
-      title
+      attachmentId: avatarId
     })
 
     if (result.isLeft()) {
@@ -53,7 +60,7 @@ export class EditProductController {
 
 
     return {
-      product: result.value.product
+      seller: result.value.seller
     }
   }
 }

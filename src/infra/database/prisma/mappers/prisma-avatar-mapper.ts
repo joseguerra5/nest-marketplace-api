@@ -17,10 +17,10 @@ export class PrismaAvatarMapper {
   static toPrismaUpdate(avatar: AvatarAttachment): Prisma.AttachmentUpdateArgs {
     return {
       where: {
-        id: avatar.id.toString()
+        id: avatar.attachmentId.toString()
       },
       data: {
-        userId: avatar.attachmentId.toString()
+        userId: avatar.sellerId.toString()
       }
     }
   }

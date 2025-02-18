@@ -8,19 +8,25 @@ import { makeProduct } from "test/factories/make-product";
 import { RegisterViewerUseCase } from "./register-viewer-product";
 import { InMemoryViewRepository } from "test/repositories/in-memory-view-repository";
 import { ViewerIsOwnerProduct } from "./errors/viewer-ownew-product";
+import { InMemoryProductAttachmentRepository } from "test/repositories/in-memory-product-attachment-repository";
+import { InMemoryAvatarAttachmentRepository } from "test/repositories/in-memory-avatar-attachments-repository";
 
 let inMemoryProductRepository: InMemoryProductRepository
 let inMemoryViewRepository: InMemoryViewRepository
 let inMemorySellerRepository: InMemorySellerRepository
 let inMemoryCategoryRepository: InMemoryCategoryRepository
+let inMemoryProductAttachmentRepository: InMemoryProductAttachmentRepository
+let inMemorAvatarAttachmentRepository: InMemoryAvatarAttachmentRepository
 let sut: RegisterViewerUseCase
 
 describe("Register viwer", () => {
   beforeEach(() => {
-    inMemoryProductRepository = new InMemoryProductRepository()
-    inMemorySellerRepository = new InMemorySellerRepository()
-    inMemoryViewRepository = new InMemoryViewRepository(inMemoryProductRepository)
     inMemoryCategoryRepository = new InMemoryCategoryRepository()
+    inMemoryProductAttachmentRepository = new InMemoryProductAttachmentRepository()
+    inMemorAvatarAttachmentRepository = new InMemoryAvatarAttachmentRepository()
+    inMemoryProductRepository = new InMemoryProductRepository(inMemorySellerRepository, inMemoryCategoryRepository, inMemoryProductAttachmentRepository)
+    inMemorySellerRepository = new InMemorySellerRepository(inMemorAvatarAttachmentRepository)
+    inMemoryViewRepository = new InMemoryViewRepository(inMemoryProductRepository)
     sut = new RegisterViewerUseCase(inMemoryViewRepository, inMemoryProductRepository, inMemorySellerRepository)
   });
   it("should be able to register a viewer", async () => {

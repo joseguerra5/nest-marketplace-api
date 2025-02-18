@@ -1,22 +1,23 @@
 import { Either, left, right } from "@/core/either"
 import { ValuesNotFoundError } from "./errors/value-not-found"
 import { ProductRepository } from "../repositories/product-repository"
-import { Product, ProductStatus } from "../../enterprise/entities/product"
+import { ProductStatus } from "../../enterprise/entities/product"
 import { Injectable } from "@nestjs/common"
+import { ProductWithDetails } from "../../enterprise/entities/value-objects/product-with-details"
 
-interface GetProductsUseCaseRequest {
+interface FetchProductsUseCaseRequest {
   page: number
   status?: ProductStatus
   search?: string
 }
 
-type GetProductsUseCaseResponse = Either<ValuesNotFoundError, {
-  products: Product[]
+type FetchProductsUseCaseResponse = Either<ValuesNotFoundError, {
+  products: ProductWithDetails[]
 }>
 
 @Injectable
   ()
-export class GetProductsUseCase {
+export class FetchProductsUseCase {
   constructor(
     private productRepository: ProductRepository,
   ) { }
@@ -25,8 +26,8 @@ export class GetProductsUseCase {
     page,
     search,
     status
-  }: GetProductsUseCaseRequest): Promise<GetProductsUseCaseResponse> {
-    const products = await this.productRepository.findManyWithParams({ page, search, status })
+  }: FetchProductsUseCaseRequest): Promise<FetchProductsUseCaseResponse> {
+    const products = await this.productRepository.findManyWithParamsAndDetails({ page, search, status })
 
     if (!products) {
       return left(new ValuesNotFoundError("Products"))
